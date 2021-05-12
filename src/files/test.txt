@@ -1,0 +1,4 @@
+PUSH
+ADD 1 2
+MINUS 2 11
+END
