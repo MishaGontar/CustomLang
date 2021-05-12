@@ -4,59 +4,84 @@ import java.util.Scanner;
 
 public class ReadFile {
 
-    public static void readFile(String path){
+    public  void readFile(String path){
         File file= new File(path);
         try(Scanner sc = new Scanner(file)){
             while (sc.hasNext()){
-                String[] strings = sc.nextLine().split(" ");
-                push(strings);
+                String[] strings = sc.nextLine().split("\\W+");
+                ReadFile readFile = new ReadFile();
+                readFile.push(strings);
             }
         }catch (Exception e) {
             System.out.println("Something wrong !");
         }
     }
+    static ArrayList <Double> stack = new ArrayList<>();
 
-    static boolean console = false;
-    static boolean add = false;
-    static boolean minus = false;
-
-    private static void push (String[] strings){
-        ArrayList <String> answer = new ArrayList<>();
+    private  void push (String[] strings){
         for (int i = 0 ; i<strings.length; i++) {
             switch (strings[i]){
                 case ("PUSH"):
-                    console = true;
-                    break;
-                case("END"):
-                    console = false;
+                    if (strings[i + 1] != null){
+                        try {
+                            double a = Double.parseDouble(strings[i + 1]);
+                            stack.add(a);
+                        }
+                        catch (NumberFormatException e) {
+                        }
+                    }
                     break;
                 case ("ADD"):
-                    add = true;
+                    if(stack.size() > 1){
+                        double a = stack.get(stack.size() - 1);
+                        double b = stack.get(stack.size() - 2);
+                        stack.remove(stack.size() - 1);
+                        stack.remove(stack.size() - 1);
+                        stack.add(a + b);
+                    }
                     break;
                 case ("MINUS"):
-                    minus = true;
+                    if(stack.size() > 1){
+                        double a = stack.get(stack.size() - 1);
+                        double b = stack.get(stack.size() - 2);
+                        stack.remove(stack.size() - 1);
+                        stack.remove(stack.size() - 1);
+                        stack.add(a - b);
+                    }
+                    break;
+                case ("CLEAR"):
+                    stack.clear();
+                    break;
+                case ("MULTIPLY"):
+                    if(stack.size() > 1){
+                        double a = stack.get(stack.size() - 1);
+                        double b = stack.get(stack.size() - 2);
+                        stack.remove(stack.size() - 1);
+                        stack.remove(stack.size() - 1);
+                        stack.add(a * b);
+                    }
+                    break;
+                case ("DIVIDE"):
+                    if(stack.size() > 1){
+                        double a = stack.get(stack.size() - 1);
+                        double b = stack.get(stack.size() - 2);
+                        stack.remove(stack.size() - 1);
+                        stack.remove(stack.size() - 1);
+                        stack.add(a / b);
+                    }
+                    break;
+                case ("POP"):
+                    if (stack.size() > 0) {
+                        System.out.println(stack.get(stack.size() - 1));
+                        stack.remove(stack.size() - 1);
+                    }
+                    break;
+                case ("PICK"):
+                    if (stack.size() >0) {
+                        System.out.println(stack.get(stack.size() - 1));
+                    }
                     break;
             }
-            if (add && console || minus && console ){
-                if (strings[i + 1] != null && strings[i + 2] != null ){
-                    try {
-                       int a = Integer.parseInt(strings[i + 1]);
-                       int b = Integer.parseInt(strings[i + 2]);
-                       if (add){
-                           answer.add("Operation ADD for `"+ strings[i + 1] + "` and `" + strings[i + 2] + "` is " + (a + b) );
-                       }
-                       if (minus) {
-                           answer.add("Operation MINUS for `"+ strings[i + 1] + "` and `" + strings[i + 2] + "` is " + (a - b) );
-                       }
-                    }catch (NumberFormatException e) {
-                        System.out.println(" Wrong operation with numbers `"+ strings[i + 1] + "` and `" + strings[i + 2] + "`");
-                    }
-                }
-                add = false;
-                minus = false;
-            }
-
         }
-        answer.stream().forEach(s -> System.out.println(s));
     }
 }
